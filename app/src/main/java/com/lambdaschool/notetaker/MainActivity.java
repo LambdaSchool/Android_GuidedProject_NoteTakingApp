@@ -1,6 +1,8 @@
 package com.lambdaschool.notetaker;
 
 import android.app.Activity;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.Nullable;
@@ -16,9 +18,10 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ArrayList<Note> notes;
+//    private ArrayList<Note> notes;
     private Context         context;
     private LinearLayout    listLayout;
+    private NoteViewModel viewModel;
 
     public static final int EDIT_REQUEST_CODE = 1;
 
@@ -27,16 +30,26 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        notes = new ArrayList<>();
+//        notes = new ArrayList<>();
         context = this;
         listLayout = findViewById(R.id.list_layout);
+
+        viewModel = ViewModelProviders.of(this).get(NoteViewModel.class);
+        final Observer<ArrayList<Note>> observer = new Observer<ArrayList<Note>>() {
+            @Override
+            public void onChanged(@Nullable ArrayList<Note> notes) {
+                if(notes != null) {
+                    refreshListView(notes);
+                }
+            }
+        };
+        viewModel.getNotesList().observe(this, observer);
 
         findViewById(R.id.add_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent intent = new Intent(context, EditActivity.class);
-                Note newNote = new Note(notes.size());
-                notes.add(newNote);
+                Note newNote = new Note(Note.NO_ID);
                 intent.putExtra(EditActivity.EDIT_NOTE_KEY, newNote);
                 startActivityForResult(intent, EDIT_REQUEST_CODE);
 
@@ -65,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
         return textView;
     }
 
-    private void refreshListView() {
+    private void refreshListView(ArrayList<Note> notes) {
         listLayout.removeAllViews();
         for(Note note: notes) {
             listLayout.addView(getDefaultTextView(note));
@@ -80,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
                 if(data != null) {
                     Note returnedNote = (Note)data.getSerializableExtra(EditActivity.EDIT_NOTE_KEY);
 
-                    boolean foundNote = false;
+                    /*boolean foundNote = false;
                     for(int i = 0; i < notes.size(); ++i) {
                         if(notes.get(i).getId() == returnedNote.getId()) {
                             // this created a bug with an infinite loop, with each loop,
@@ -93,7 +106,8 @@ public class MainActivity extends AppCompatActivity {
                     if(!foundNote) {
                         notes.add(returnedNote);
                     }
-                    refreshListView();
+                    refreshListView();*/
+                    viewModel.addNote(returnedNote);
                 }
             }
         }
