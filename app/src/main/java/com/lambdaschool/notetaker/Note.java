@@ -14,6 +14,13 @@ public class Note implements Serializable {
         this.id = id;
     }
 
+    public Note(String csvString) {
+        String[] values = csvString.split(",");
+        this.title = values[0];
+        this.content = values[1];
+        this.id = Integer.parseInt(values[2]);
+    }
+
     public Note(int id) {
         this.id = id;
     }
@@ -40,5 +47,9 @@ public class Note implements Serializable {
 
     public void setId(int id) {
         this.id = id;
+    }
+
+    public String toCsvString() {
+        return this.title.replaceAll(",", "") + "," + this.content.replaceAll(",", "") + "," + this.id;
     }
 }
