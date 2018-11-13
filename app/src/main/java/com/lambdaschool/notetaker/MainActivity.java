@@ -9,6 +9,8 @@ import android.content.SharedPreferences;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
@@ -19,11 +21,17 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
+    public static final int LAYOUT_SPAN_COUNT = 2;
     public static SharedPreferences preferences;
 
     private Context         context;
-    private LinearLayout    listLayout;
+    private Activity activity;
+//    private LinearLayout    listLayout;
     private NoteViewModel viewModel;
+
+    private StaggeredGridLayoutManager layoutManager;
+    private RecyclerView listView;
+    private NoteListAdapter listAdapter;
 
     public static final int EDIT_REQUEST_CODE = 1;
 
@@ -35,14 +43,23 @@ public class MainActivity extends AppCompatActivity {
 
 //        notes = new ArrayList<>();
         context = this;
-        listLayout = findViewById(R.id.list_layout);
+        activity = this;
+//        listLayout = findViewById(R.id.list_layout);
+
+
+        listView = findViewById(R.id.note_recycler_view);
+        layoutManager = new StaggeredGridLayoutManager(LAYOUT_SPAN_COUNT,
+                                                       StaggeredGridLayoutManager.HORIZONTAL);
+        listView.setLayoutManager(layoutManager);
 
         viewModel = ViewModelProviders.of(this).get(NoteViewModel.class);
         final Observer<ArrayList<Note>> observer = new Observer<ArrayList<Note>>() {
             @Override
             public void onChanged(@Nullable ArrayList<Note> notes) {
                 if(notes != null) {
-                    refreshListView(notes);
+//                    refreshListView(notes);
+                    listAdapter = new NoteListAdapter(notes, activity);
+                    listView.setAdapter(listAdapter);
                 }
             }
         };
@@ -62,6 +79,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.i(getLocalClassName(), notes.toString());*/
             }
         });
+
     }
 
     private TextView getDefaultTextView(final Note note) {
@@ -82,10 +100,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void refreshListView(ArrayList<Note> notes) {
-        listLayout.removeAllViews();
+        /*listLayout.removeAllViews();
         for(Note note: notes) {
             listLayout.addView(getDefaultTextView(note));
-        }
+        }*/
     }
 
     @Override

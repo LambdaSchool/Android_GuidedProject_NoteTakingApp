@@ -19,6 +19,8 @@ public class Note implements Serializable {
         this.title = values[0];
         this.content = values[1];
         this.id = Integer.parseInt(values[2]);
+
+        toCsvString();
     }
 
     public Note(int id) {
