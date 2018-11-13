@@ -53,13 +53,14 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.ViewHo
         final Note data = dataList.get(i);
 
         viewHolder.noteTitle.setText(data.getTitle());
-        String content;
+        // I removed the content length limit to better take advantage of the staggered grid
+        /*String content;
         if (data.getContent().length() > 30) {
             content = data.getContent().substring(0, 30) + "...";
         } else {
             content = data.getContent();
-        }
-        viewHolder.noteContent.setText(content);
+        }*/
+        viewHolder.noteContent.setText(data.getContent());
         viewHolder.parentView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
