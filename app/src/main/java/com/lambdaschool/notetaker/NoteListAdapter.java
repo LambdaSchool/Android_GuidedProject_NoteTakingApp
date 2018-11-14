@@ -60,6 +60,12 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.ViewHo
         } else {
             content = data.getContent();
         }*/
+        /*if(i == 1) {
+            viewHolder.parentView.setBackgroundColor(context.getResources().getColor(R.color.colorPrimary));
+        } else {
+            viewHolder.parentView.setBackgroundColor(context.getResources().getColor(R.color.colorAccent));
+        }*/
+
         viewHolder.noteContent.setText(data.getContent());
         viewHolder.parentView.setOnClickListener(new View.OnClickListener() {
             @Override
