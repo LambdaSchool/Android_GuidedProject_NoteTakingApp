@@ -30,6 +30,8 @@ public class MainActivity extends AppCompatActivity {
 //    private LinearLayout    listLayout;
     private NoteViewModel viewModel;
 
+    private int currentTheme;
+
     private StaggeredGridLayoutManager layoutManager;
 //    private GridLayoutManager layoutManager;
     private RecyclerView      listView;
@@ -40,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ThemeUtils.onActivityCreateSetTheme(this);
         setContentView(R.layout.activity_main);
         preferences = this.getPreferences(Context.MODE_PRIVATE);
 
@@ -47,6 +50,14 @@ public class MainActivity extends AppCompatActivity {
         context = this;
         activity = this;
 //        listLayout = findViewById(R.id.list_layout);
+
+        findViewById(R.id.settings_button).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(context, SettingsActivity.class);
+                startActivity(intent);
+            }
+        });
 
 
         listView = findViewById(R.id.note_recycler_view);
@@ -104,6 +115,25 @@ public class MainActivity extends AppCompatActivity {
         });
 
         return textView;
+    }
+
+    @Override
+    public void setTheme(int resid) {
+        currentTheme = resid;
+        super.setTheme(resid);
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if(!ThemeUtils.checkTheme(activity, currentTheme)) {
+            ThemeUtils.refreshActivity(activity);
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
     }
 
     private void refreshListView(ArrayList<Note> notes) {

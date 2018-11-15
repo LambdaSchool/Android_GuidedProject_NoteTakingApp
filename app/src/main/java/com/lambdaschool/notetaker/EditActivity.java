@@ -11,12 +11,14 @@ public class EditActivity extends AppCompatActivity {
     public static final String EDIT_NOTE_KEY = "edit_note";
 
 
+
     EditText editTitle, editContent;
     Note note;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ThemeUtils.onActivityCreateSetTheme(this);
         setContentView(R.layout.activity_edit);
 
         editTitle = findViewById(R.id.edit_title);
@@ -30,6 +32,11 @@ public class EditActivity extends AppCompatActivity {
         // here we grabbed the note but didn't use it to populate the ui
         editTitle.setText(note.getTitle());
         editContent.setText(note.getContent());
+    }
+
+    @Override
+    public void setTheme(int resid) {
+        super.setTheme(resid);
     }
 
     @Override

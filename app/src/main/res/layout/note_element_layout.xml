@@ -5,15 +5,15 @@
     android:id="@+id/note_element_parent_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    card_view:cardCornerRadius="4dp"
+    card_view:cardCornerRadius="?attr/card_corner_radius"
     card_view:cardBackgroundColor="@color/colorAccent"
     android:elevation="@dimen/cardview_default_elevation"
-    android:layout_margin="5dp"
+    android:layout_margin="?attr/card_layout_margin"
     android:orientation="vertical">
 
     <LinearLayout
         android:orientation="vertical"
-        android:layout_margin="10dp"
+        android:layout_margin="@dimen/card_layout_margin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
 
