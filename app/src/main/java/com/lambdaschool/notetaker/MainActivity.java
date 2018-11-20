@@ -3,6 +3,7 @@ package com.lambdaschool.notetaker;
 import android.app.Activity;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
@@ -27,6 +28,7 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
 
     public static final int               LAYOUT_SPAN_COUNT = 2;
+    public static final int LIST_INTENT_REQUEST_CODE = 0;
     public static       SharedPreferences preferences;
 
     private Context       context;
@@ -204,7 +206,7 @@ public class MainActivity extends AppCompatActivity {
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
                         CharSequence name        = "New Note Channel";
                         String       description = "Notifications triggered by our button";
-                        int          importance  = NotificationManager.IMPORTANCE_LOW;
+                        int          importance  = NotificationManager.IMPORTANCE_HIGH;
 
                         NotificationChannel channel = new NotificationChannel(channelId, name, importance);
                         channel.setDescription(description);
@@ -212,9 +214,19 @@ public class MainActivity extends AppCompatActivity {
                         notificationManager.createNotificationChannel(channel);
                     }
 
+                    Intent listIntent = new Intent(context, MainActivity.class);
+                    PendingIntent listPendingIntent = PendingIntent.getActivity(context, LIST_INTENT_REQUEST_CODE, listIntent, PendingIntent.FLAG_ONE_SHOT);
+
+                    Intent noteIntent = new Intent(context, EditActivity.class);
+                    noteIntent.putExtra(EditActivity.EDIT_NOTE_KEY, returnedNote);
+                    PendingIntent notePendingIntent = PendingIntent.getActivity(context, 2, noteIntent, PendingIntent.FLAG_ONE_SHOT);
+
                     NotificationCompat.Builder builder = new NotificationCompat.Builder(context, channelId)
                             .setContentTitle(returnedNote.getTitle())
                             .setContentText(returnedNote.getContent())
+                            .setContentIntent(listPendingIntent)
+                            .addAction(R.drawable.ic_notifications_black_24dp, "Go To Note", notePendingIntent)
+                            .setAutoCancel(true)
                             .setSmallIcon(R.drawable.ic_info_black_24dp);
                     notificationManager.notify(2, builder.build());
                 }
