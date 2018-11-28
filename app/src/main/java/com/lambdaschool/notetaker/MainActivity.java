@@ -46,6 +46,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         preferences = this.getPreferences(Context.MODE_PRIVATE);
 
+
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+//                NotesFirebaseDao.createNote(new Note(0, "Title", "Content"));
+                NotesFirebaseDao.updateNote("-LSQk_9AaFUJTnI-5HQx", new Note(0, "Title", "Content"));
+//                NotesFirebaseDao.deleteNote("-LSQbi2-Bhn17b1QcSsn");
+            }
+        }).start();
+
+
 //        notes = new ArrayList<>();
         context = this;
         activity = this;

@@ -13,6 +13,7 @@ public class NoteRepository {
 
     public MutableLiveData<ArrayList<Note>> getNotes() {
         MutableLiveData<ArrayList<Note>> liveDataList = new MutableLiveData<>();
+        // retrieve notes from online DB
         liveDataList.setValue(SharedPrefsDao.getAllNotes());
         return liveDataList;
     }
