@@ -24,7 +24,8 @@ public class NoteViewModel extends ViewModel {
 
     public void addNote(Note note) {
         if(noteList != null) {
-            noteList.setValue(repo.addNote(note));
+            repo.addNote(note);
+            noteList = repo.getNotes();
         }
     }
 }

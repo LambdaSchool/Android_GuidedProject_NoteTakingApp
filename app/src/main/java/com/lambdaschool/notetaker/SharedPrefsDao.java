@@ -56,14 +56,14 @@ public class SharedPrefsDao {
     }
 
     public static void setNote(Note note) {
-        if (note.getId() == Note.NO_ID) {
+        if (note.getId().equals(Note.NO_ID)) {
             note.setId(getNextId());
         }
         String[] ids    = getAllIds();
         boolean  exists = false;
         for (String id : ids) {
             if(!id.equals("")) {
-                if (note.getId() == Integer.parseInt(id)) {
+                if (note.getId().equals(id)) {
                     exists = true;
                     break;
                 }
@@ -83,7 +83,7 @@ public class SharedPrefsDao {
         editor.apply();
     }
 
-    private static void addId(int id) {
+    private static void addId(String id) {
         String idsString = getIdsString();
         idsString = idsString + "," + id;
         SharedPreferences.Editor editor = MainActivity.preferences.edit();

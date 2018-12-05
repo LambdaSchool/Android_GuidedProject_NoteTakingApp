@@ -12,14 +12,28 @@ public class NoteRepository {
     }*/
 
     public MutableLiveData<ArrayList<Note>> getNotes() {
-        MutableLiveData<ArrayList<Note>> liveDataList = new MutableLiveData<>();
+        final MutableLiveData<ArrayList<Note>> liveDataList = new MutableLiveData<>();
         // retrieve notes from online DB
-        liveDataList.setValue(SharedPrefsDao.getAllNotes());
+//        liveDataList.setValue(SharedPrefsDao.getAllNotes());
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                final ArrayList<Note> notes = NotesFirebaseDao.getNotes();
+                liveDataList.postValue(notes);
+            }
+        }).start();
         return liveDataList;
     }
 
-    public ArrayList<Note> addNote(Note note) {
-        SharedPrefsDao.setNote(note);
-        return SharedPrefsDao.getAllNotes();
+    public void addNote(final Note note) {
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                String newId = NotesFirebaseDao.createNote(note);
+                note.setId(newId);
+                SharedPrefsDao.setNote(note);
+            }
+        }).start();
+//        return SharedPrefsDao.getAllNotes();
     }
 }

@@ -6,7 +6,7 @@ import org.json.JSONObject;
 import java.io.Serializable;
 
 public class Note implements Serializable {
-    public static final int NO_ID = -1;
+    public static final String NO_ID = "";
 
     private String title, content;
     private String id;
@@ -16,6 +16,13 @@ public class Note implements Serializable {
         this.title = title;
         this.content = content;
         this.id = Integer.toString(id);
+        this.timestamp = System.currentTimeMillis();
+    }
+
+    public Note(String id, String title, String content) {
+        this.title = title;
+        this.content = content;
+        this.id = id;
         this.timestamp = System.currentTimeMillis();
     }
 
@@ -68,8 +75,8 @@ public class Note implements Serializable {
         this.content = content;
     }
 
-    public int getId() {
-        return Integer.parseInt(id);
+    public String getId() {
+        return id;
     }
 
     public void setId(int id) {
@@ -98,5 +105,9 @@ public class Note implements Serializable {
             e.printStackTrace();
         }
         return json.toString();
+    }
+
+    public void setId(String newId) {
+        this.id = newId;
     }
 }
