@@ -19,6 +19,13 @@ public class Note implements Serializable {
         this.timestamp = System.currentTimeMillis();
     }
 
+    public Note(String title, String content, String id, long timestamp) {
+        this.title = title;
+        this.content = content;
+        this.id = id;
+        this.timestamp = timestamp;
+    }
+
     public Note(String id, String title, String content) {
         this.title = title;
         this.content = content;
@@ -81,6 +88,10 @@ public class Note implements Serializable {
 
     public void setId(int id) {
         this.id = Integer.toString(id);
+    }
+
+    public long getTimestamp() {
+        return timestamp;
     }
 
     public String toCsvString() {

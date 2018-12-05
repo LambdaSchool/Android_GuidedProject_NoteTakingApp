@@ -46,6 +46,17 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         preferences = this.getPreferences(Context.MODE_PRIVATE);
 
+        NotesDbDao.initializeInstance(this);
+        NotesDbDao.createNote(new Note("my first id", "Shores", "Shores of the cosmic ocean from which we spring laws of physics radio telescope two ghostly white figures in coveralls and helmets are soflty dancing of brilliant syntheses. Venture muse about emerged into consciousness Sea of Tranquility Orion's sword vastness is bearable only through love. Made in the interiors of collapsing stars bits of moving fluff a very small stage in a vast cosmic arena citizens of distant epochs how far away Orion's sword."));
+        Note readNote = NotesDbDao.readNote("my first id");
+        NotesDbDao.readAllNotes();
+        NotesDbDao.updateNote(new Note("my first id", "Shores", "Orion's sword."));
+        readNote = NotesDbDao.readNote("my first id");
+        NotesDbDao.readAllNotes();
+        NotesDbDao.deleteNote(new Note("my first id", "Shores", "Orion's sword."));
+        readNote = NotesDbDao.readNote("my first id");
+        Log.i("Testing SQL", readNote.toJsonString());
+
 
         /*new Thread(new Runnable() {
             @Override
