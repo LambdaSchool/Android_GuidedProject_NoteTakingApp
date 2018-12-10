@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         preferences = this.getPreferences(Context.MODE_PRIVATE);
 
-        NotesDbDao.initializeInstance(this);
+        /*NotesDbDao.initializeInstance(this);
         NotesDbDao.createNote(new Note("my first id", "Shores", "Shores of the cosmic ocean from which we spring laws of physics radio telescope two ghostly white figures in coveralls and helmets are soflty dancing of brilliant syntheses. Venture muse about emerged into consciousness Sea of Tranquility Orion's sword vastness is bearable only through love. Made in the interiors of collapsing stars bits of moving fluff a very small stage in a vast cosmic arena citizens of distant epochs how far away Orion's sword."));
         Note readNote = NotesDbDao.readNote("my first id");
         NotesDbDao.readAllNotes();
@@ -55,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
         NotesDbDao.readAllNotes();
         NotesDbDao.deleteNote(new Note("my first id", "Shores", "Orion's sword."));
         readNote = NotesDbDao.readNote("my first id");
-        Log.i("Testing SQL", readNote.toJsonString());
+        Log.i("Testing SQL", readNote.toJsonString());*/
 
 
         /*new Thread(new Runnable() {
@@ -81,7 +81,6 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         listView = findViewById(R.id.note_recycler_view);
         // The layout manager was set to have a span count of 2 but was horizontal
         // so it made 2 rows span the entire vertical screen. So I changed the
@@ -95,13 +94,18 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onChanged(@Nullable ArrayList<Note> notes) {
                 if(notes != null) {
-//                    refreshListView(notes);
-                    listAdapter = new NoteListAdapter(notes, activity);
-                    listView.setAdapter(listAdapter);
+                    if (listAdapter == null) {
+                        listAdapter = new NoteListAdapter(notes, activity);
+                        listView.setAdapter(listAdapter);
+                    } else {
+                        // added this so support
+                        listAdapter.replaceList(notes);
+                        listAdapter.notifyDataSetChanged();
+                    }
                 }
             }
         };
-        viewModel.getNotesList().observe(this, observer);
+        viewModel.getNotesList(context).observe(this, observer);
 
         findViewById(R.id.add_button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -188,7 +192,7 @@ public class MainActivity extends AppCompatActivity {
         notes.add(new Note(Note.NO_ID, "Euclid", "Euclid Sea of Tranquility tendrils of gossamer clouds gathered by gravity extraplanetary circumnavigated. Globular star cluster star stuff harvesting star light at the edge of forever vastness is bearable only through love shores of the cosmic ocean made in the interiors of collapsing stars. From which we spring from which we spring emerged into consciousness from which we spring made in the interiors of collapsing stars the sky calls to us."));
         notes.add(new Note(Note.NO_ID, "Decipherment", "Decipherment rich in mystery realm of the galaxies circumnavigated bits of moving fluff a still more glorious dawn awaits. Billions upon billions two ghostly white figures in coveralls and helmets are soflty dancing the carbon in our apple pies brain is the seed of intelligence Sea of Tranquility not a sunrise but a galaxyrise. Another world as a patch of light something incredible is waiting to be known not a sunrise but a galaxyrise hearts of the stars permanence of the stars and billions upon billions upon billions upon billions upon billions upon billions upon billions."));
         for(Note note: notes) {
-            viewModel.addNote(note);
+            viewModel.addNote(note, context);
         }
     }
 
@@ -214,7 +218,7 @@ public class MainActivity extends AppCompatActivity {
                         notes.add(returnedNote);
                     }
                     refreshListView();*/
-                    viewModel.addNote(returnedNote);
+                    viewModel.addNote(returnedNote, context);
                 }
             }
         }

@@ -33,13 +33,18 @@ public class Note implements Serializable {
         this.timestamp = System.currentTimeMillis();
     }
 
-    public Note(String csvString) {
+    /*public Note(String csvString) {
         String[] values = csvString.split(",");
         this.title = values[0];
         this.content = values[1];
         this.id = values[2];
 
         toCsvString();
+    }*/
+
+    public Note(String id) {
+        this.id = id;
+        this.timestamp = System.currentTimeMillis();
     }
 
     public Note(int id) {

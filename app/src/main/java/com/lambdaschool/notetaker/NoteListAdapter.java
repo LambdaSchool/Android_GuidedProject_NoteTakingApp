@@ -35,6 +35,11 @@ public class NoteListAdapter extends RecyclerView.Adapter<NoteListAdapter.ViewHo
         this.activity = activity;
     }
 
+    public void replaceList(ArrayList<Note> newData) {
+        this.dataList.clear();
+        this.dataList.addAll(newData);
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {

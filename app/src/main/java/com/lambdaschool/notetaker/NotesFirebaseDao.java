@@ -40,7 +40,13 @@ public class NotesFirebaseDao {
 
     public static String createNote(Note note) {
         final String result = NetworkAdapter.httpRequest(USER_NOTES, NetworkAdapter.POST, note.toJsonString());
-        return result;
+
+        try {
+            return new JSONObject(result).getString("name");
+        } catch (JSONException e) {
+            e.printStackTrace();
+            return "";
+        }
     }
 
     public static void deleteNote(String id) {

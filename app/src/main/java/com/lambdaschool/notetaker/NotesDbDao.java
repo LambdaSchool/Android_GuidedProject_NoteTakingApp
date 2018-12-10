@@ -85,7 +85,6 @@ public class NotesDbDao {
             values.put(NotesDbContract.NotesEntry.COLUMN_NAME_TITLE, note.getTitle());
             values.put(NotesDbContract.NotesEntry.COLUMN_NAME_FB_ID, note.getId());
 
-            // TODO: keep an eye on this, our primary key is a String, this returns a long. May need to add a field for SQL id and one for firebase id
             long resultId = db.insert(NotesDbContract.NotesEntry.TABLE_NAME, null, values);
 
             /*db.execSQL(String.format("INSERT INTO %s " +
@@ -139,4 +138,31 @@ public class NotesDbDao {
     }
 
 
+    public static ArrayList<Note> updateCache(ArrayList<Note> fbNotes) {
+        // read all notes
+        final ArrayList<Note> cacheNotes = readAllNotes();
+
+        // check each note
+        for(Note fbNote: fbNotes) {
+            boolean noteFound = false;
+            for(Note cacheNote: cacheNotes) {
+                if(fbNote.getId().equals(cacheNote.getId())) {
+                    // if note does exist, check for timestamp
+                    if(fbNote.getTimestamp() > cacheNote.getTimestamp()) {
+                        // if fb is newer update cache
+                        updateNote(fbNote);
+                    } else {
+                        // else keep cache
+                    }
+                    noteFound = true;
+                }
+            }
+            if(!noteFound) {
+                // if note doesn't exist in cache, add it
+                createNote(fbNote);
+            }
+        }
+
+        return readAllNotes();
+    }
 }

@@ -3,6 +3,7 @@ package com.lambdaschool.notetaker;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.arch.lifecycle.ViewModel;
+import android.content.Context;
 
 import java.util.ArrayList;
 
@@ -10,22 +11,22 @@ public class NoteViewModel extends ViewModel {
     private MutableLiveData<ArrayList<Note>> noteList;
     private NoteRepository repo;
 
-    public LiveData<ArrayList<Note>> getNotesList() {
+    public LiveData<ArrayList<Note>> getNotesList(Context context) {
         if(noteList == null) {
-            loadList();
+            loadList(context);
         }
         return noteList;
     }
 
-    private void loadList() {
+    private void loadList(Context context) {
         repo = new NoteRepository();
-        noteList = repo.getNotes();
+        noteList = repo.getNotes(context);
     }
 
-    public void addNote(Note note) {
+    public void addNote(Note note, Context context) {
         if(noteList != null) {
             repo.addNote(note);
-            noteList = repo.getNotes();
+//            noteList = repo.getNotes(context);
         }
     }
 }
