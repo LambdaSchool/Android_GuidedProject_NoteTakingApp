@@ -6,14 +6,18 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.transition.Explode;
+import android.transition.Fade;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -22,20 +26,18 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static final int LAYOUT_SPAN_COUNT = 2;
-    public static SharedPreferences preferences;
+    public static final int               LAYOUT_SPAN_COUNT = 2;
+    public static       SharedPreferences preferences;
 
-    private Context         context;
-    private Activity activity;
-//    private LinearLayout    listLayout;
+    private Context       context;
+    private Activity      activity;
     private NoteViewModel viewModel;
 
     private int currentTheme;
 
     private StaggeredGridLayoutManager layoutManager;
-//    private GridLayoutManager layoutManager;
-    private RecyclerView      listView;
-    private NoteListAdapter   listAdapter;
+    private RecyclerView               listView;
+    private NoteListAdapter            listAdapter;
 
     public static final int EDIT_REQUEST_CODE = 1;
 
@@ -43,35 +45,22 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         ThemeUtils.onActivityCreateSetTheme(this);
+
+        /*if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            getWindow().requestFeature(Window.FEATURE_CONTENT_TRANSITIONS);
+            final Explode transition = new Explode();
+            transition.setStartDelay(250);
+            transition.setDuration(500);
+            getWindow().setEnterTransition(transition);
+            getWindow().setExitTransition(transition);
+            supportPostponeEnterTransition();
+        }*/
+
         setContentView(R.layout.activity_main);
         preferences = this.getPreferences(Context.MODE_PRIVATE);
 
-        /*NotesDbDao.initializeInstance(this);
-        NotesDbDao.createNote(new Note("my first id", "Shores", "Shores of the cosmic ocean from which we spring laws of physics radio telescope two ghostly white figures in coveralls and helmets are soflty dancing of brilliant syntheses. Venture muse about emerged into consciousness Sea of Tranquility Orion's sword vastness is bearable only through love. Made in the interiors of collapsing stars bits of moving fluff a very small stage in a vast cosmic arena citizens of distant epochs how far away Orion's sword."));
-        Note readNote = NotesDbDao.readNote("my first id");
-        NotesDbDao.readAllNotes();
-        NotesDbDao.updateNote(new Note("my first id", "Shores", "Orion's sword."));
-        readNote = NotesDbDao.readNote("my first id");
-        NotesDbDao.readAllNotes();
-        NotesDbDao.deleteNote(new Note("my first id", "Shores", "Orion's sword."));
-        readNote = NotesDbDao.readNote("my first id");
-        Log.i("Testing SQL", readNote.toJsonString());*/
-
-
-        /*new Thread(new Runnable() {
-            @Override
-            public void run() {
-//                NotesFirebaseDao.createNote(new Note(0, "Title", "Content"));
-                NotesFirebaseDao.updateNote("-LSQk_9AaFUJTnI-5HQx", new Note(0, "Title", "Content"));
-//                NotesFirebaseDao.deleteNote("-LSQbi2-Bhn17b1QcSsn");
-            }
-        }).start();*/
-
-
-//        notes = new ArrayList<>();
         context = this;
         activity = this;
-//        listLayout = findViewById(R.id.list_layout);
 
         findViewById(R.id.settings_button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,21 +71,19 @@ public class MainActivity extends AppCompatActivity {
         });
 
         listView = findViewById(R.id.note_recycler_view);
-        // The layout manager was set to have a span count of 2 but was horizontal
-        // so it made 2 rows span the entire vertical screen. So I changed the
-        // orientation to vertical and kept the span count to be the same
+
         layoutManager = new StaggeredGridLayoutManager(LAYOUT_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL);
-//        layoutManager = new GridLayoutManager(context, LAYOUT_SPAN_COUNT);
         listView.setLayoutManager(layoutManager);
 
         viewModel = ViewModelProviders.of(this).get(NoteViewModel.class);
         final Observer<ArrayList<Note>> observer = new Observer<ArrayList<Note>>() {
             @Override
             public void onChanged(@Nullable ArrayList<Note> notes) {
-                if(notes != null) {
+                if (notes != null) {
                     if (listAdapter == null) {
                         listAdapter = new NoteListAdapter(notes, activity);
                         listView.setAdapter(listAdapter);
+//                        supportStartPostponedEnterTransition();
                     } else {
                         // added this so support
                         listAdapter.replaceList(notes);
@@ -110,37 +97,13 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.add_button).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context, EditActivity.class);
-                Note newNote = new Note(Note.NO_ID);
+                Intent intent  = new Intent(context, EditActivity.class);
+                Note   newNote = new Note(Note.NO_ID);
                 intent.putExtra(EditActivity.EDIT_NOTE_KEY, newNote);
                 startActivityForResult(intent, EDIT_REQUEST_CODE);
 
-                /*notes.add(System.currentTimeMillis());
-                int noteIndex = notes.size() - 1;
-                listLayout.addView(getDefaultTextView(notes.get(noteIndex).toString()));
-                Log.i(getLocalClassName(), notes.toString());*/
             }
         });
-
-//        populateSampleData();  // only populate data once
-
-    }
-
-    private TextView getDefaultTextView(final Note note) {
-        TextView textView = new TextView(context);
-        textView.setText(note.getTitle());
-        textView.setTextSize(24);
-        textView.setPadding(10, 10, 10, 10);
-        textView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent intent = new Intent(context, EditActivity.class);
-                intent.putExtra(EditActivity.EDIT_NOTE_KEY, note);
-                startActivityForResult(intent, EDIT_REQUEST_CODE);
-            }
-        });
-
-        return textView;
     }
 
     @Override
@@ -152,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onStart() {
         super.onStart();
-        if(!ThemeUtils.checkTheme(activity, currentTheme)) {
+        if (!ThemeUtils.checkTheme(activity, currentTheme)) {
             ThemeUtils.refreshActivity(activity);
         }
     }
@@ -160,13 +123,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-    }
-
-    private void refreshListView(ArrayList<Note> notes) {
-        /*listLayout.removeAllViews();
-        for(Note note: notes) {
-            listLayout.addView(getDefaultTextView(note));
-        }*/
     }
 
     private void populateSampleData() {
@@ -191,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
         notes.add(new Note(Note.NO_ID, "Tunguska", "Tunguska event gathered by gravity take root and flourish across the centuries hearts of the stars realm of the galaxies. How far away the sky calls to us made in the interiors of collapsing stars encyclopaedia galactica as a patch of light extraordinary claims require extraordinary evidence. Rich in heavy atoms great turbulent clouds with pretty stories for which there's little good evidence made in the interiors of collapsing stars vanquish the impossible from which we spring."));
         notes.add(new Note(Note.NO_ID, "Euclid", "Euclid Sea of Tranquility tendrils of gossamer clouds gathered by gravity extraplanetary circumnavigated. Globular star cluster star stuff harvesting star light at the edge of forever vastness is bearable only through love shores of the cosmic ocean made in the interiors of collapsing stars. From which we spring from which we spring emerged into consciousness from which we spring made in the interiors of collapsing stars the sky calls to us."));
         notes.add(new Note(Note.NO_ID, "Decipherment", "Decipherment rich in mystery realm of the galaxies circumnavigated bits of moving fluff a still more glorious dawn awaits. Billions upon billions two ghostly white figures in coveralls and helmets are soflty dancing the carbon in our apple pies brain is the seed of intelligence Sea of Tranquility not a sunrise but a galaxyrise. Another world as a patch of light something incredible is waiting to be known not a sunrise but a galaxyrise hearts of the stars permanence of the stars and billions upon billions upon billions upon billions upon billions upon billions upon billions."));
-        for(Note note: notes) {
+        for (Note note : notes) {
             viewModel.addNote(note, context);
         }
     }
@@ -199,25 +155,11 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == Activity.RESULT_OK) {
-            if(requestCode == EDIT_REQUEST_CODE) {
-                if(data != null) {
-                    Note returnedNote = (Note)data.getSerializableExtra(EditActivity.EDIT_NOTE_KEY);
+        if (resultCode == Activity.RESULT_OK) {
+            if (requestCode == EDIT_REQUEST_CODE) {
+                if (data != null) {
+                    Note returnedNote = (Note) data.getSerializableExtra(EditActivity.EDIT_NOTE_KEY);
 
-                    /*boolean foundNote = false;
-                    for(int i = 0; i < notes.size(); ++i) {
-                        if(notes.get(i).getId() == returnedNote.getId()) {
-                            // this created a bug with an infinite loop, with each loop,
-                            // an element is inserted into the beginning of the arraylist
-//                            notes.add(i, returnedNote);
-                            notes.set(i, returnedNote);
-                            foundNote = true;
-                        }
-                    }
-                    if(!foundNote) {
-                        notes.add(returnedNote);
-                    }
-                    refreshListView();*/
                     viewModel.addNote(returnedNote, context);
                 }
             }
