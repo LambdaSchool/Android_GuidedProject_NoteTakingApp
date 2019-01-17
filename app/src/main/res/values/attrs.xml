@@ -4,4 +4,10 @@
     <attr name="card_layout_margin" format="reference"/>
     <attr name="note_title_text_size" format="reference"/>
     <attr name="note_content_text_size" format="reference"/>
+
+    <declare-styleable name="LinedEditText">
+        <attr name="line_color" format="color"/>
+        <attr name="line_thickness" format="integer"/>
+        <attr name="line_offset" format="integer"/>
+    </declare-styleable>
 </resources>

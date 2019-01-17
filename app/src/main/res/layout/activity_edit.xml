@@ -15,13 +15,18 @@
         app:layout_constraintBottom_toTopOf="@+id/edit_content"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
+    <com.lambdaschool.notetaker.views.LinedEditText
         android:id="@+id/edit_content"
         android:gravity="top"
-        android:inputType="text"
+        android:inputType="textMultiLine"
         android:layout_width="match_parent"
+        android:lineSpacingMultiplier="1.5"
         android:layout_height="0dp"
         android:hint="@string/note_content_hint"
+
+        app:line_thickness="6"
+        app:line_offset="12"
+
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/edit_title" />
 
