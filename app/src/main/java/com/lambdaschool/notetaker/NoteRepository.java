@@ -1,5 +1,6 @@
 package com.lambdaschool.notetaker;
 
+import android.app.Activity;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
 
@@ -16,15 +17,21 @@ public class NoteRepository {
         this.notes = new ArrayList<>();
     }*/
 
-    public MutableLiveData<ArrayList<Note>> getNotes(Context context) {
+    public MutableLiveData<ArrayList<Note>> getNotes(final Context context) {
         liveDataList = new MutableLiveData<>();
-        NotesDbDao.initializeInstance(context);
-        // retrieve notes from cache
-        liveDataList.setValue(getNotesFromCache());
         // retrieve notes from online DB
         new Thread(new Runnable() {
             @Override
             public void run() {
+                NotesDbDao.initializeInstance(context);
+                // retrieve notes from cache
+                ((Activity)context).runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        liveDataList.setValue(getNotesFromCache());
+                    }
+                });
+
                 final ArrayList<Note> notes = NotesFirebaseDao.getNotes();
 
                 final ArrayList<Note> updatedNotes = NotesDbDao.updateCache(notes);

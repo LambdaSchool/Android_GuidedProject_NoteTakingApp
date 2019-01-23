@@ -76,23 +76,6 @@ public class MainActivity extends AppCompatActivity {
         listView.setLayoutManager(layoutManager);
 
         viewModel = ViewModelProviders.of(this).get(NoteViewModel.class);
-        final Observer<ArrayList<Note>> observer = new Observer<ArrayList<Note>>() {
-            @Override
-            public void onChanged(@Nullable ArrayList<Note> notes) {
-                if (notes != null) {
-                    if (listAdapter == null) {
-                        listAdapter = new NoteListAdapter(notes, activity);
-                        listView.setAdapter(listAdapter);
-//                        supportStartPostponedEnterTransition();
-                    } else {
-                        // added this so support
-                        listAdapter.replaceList(notes);
-                        listAdapter.notifyDataSetChanged();
-                    }
-                }
-            }
-        };
-        viewModel.getNotesList(context).observe(this, observer);
 
         findViewById(R.id.add_button).setOnClickListener(new View.OnClickListener() {
             @Override
@@ -123,6 +106,24 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
+
+        final Observer<ArrayList<Note>> observer = new Observer<ArrayList<Note>>() {
+            @Override
+            public void onChanged(@Nullable ArrayList<Note> notes) {
+                if (notes != null) {
+                    if (listAdapter == null) {
+                        listAdapter = new NoteListAdapter(notes, activity);
+                        listView.setAdapter(listAdapter);
+//                        supportStartPostponedEnterTransition();
+                    } else {
+                        // added this so support
+                        listAdapter.replaceList(notes);
+                        listAdapter.notifyDataSetChanged();
+                    }
+                }
+            }
+        };
+        viewModel.getNotesList(context).observe(this, observer);
     }
 
     private void populateSampleData() {
